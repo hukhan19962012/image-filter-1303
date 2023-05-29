@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { Router, Request, Response } from 'express';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
 (async () => {
@@ -30,6 +31,20 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+
+  app.get("/filteredimage", async (req, res ) => {
+    const url = req.query.image_url.toString();
+
+    if(!url){
+      res.status(400).send("url is not invalid");
+    }
+
+    const image = await filterImageFromURL(url);    
+
+    res.status(200).sendFile(image, ()=> {deleteLocalFiles([image])});
+
+  });
+  
   
   // Root Endpoint
   // Displays a simple message to the user
